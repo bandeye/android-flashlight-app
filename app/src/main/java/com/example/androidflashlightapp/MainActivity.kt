@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.content.ContextCompat
 import com.example.androidflashlightapp.ui.theme.AndroidFlashlightAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -41,7 +40,8 @@ class MainActivity : ComponentActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun openFlashLight() {
-        val cameraManager = ContextCompat.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+    //        val cameraManager = ContextCompat.getSystemService(Context.CAMERA_SERVICE) as CameraManager
         val cameraId = cameraManager.cameraIdList[0]
         if (!flashLightStatus) {
             try {
@@ -49,15 +49,16 @@ class MainActivity : ComponentActivity() {
                 flashLightStatus = true
 
             } catch (e: CameraAccessException) {
+                println(e.toString())
             }
         } else {
             try {
                 cameraManager.setTorchMode(cameraId, false)
                 flashLightStatus = false
             } catch (e: CameraAccessException) {
+                println(e.toString())
             }
         }
-
     }
 }
 
