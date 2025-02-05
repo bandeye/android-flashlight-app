@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.androidflashlightapp.ui.theme.AndroidFlashlightAppTheme
 
 class MainActivity : ComponentActivity() {
-    var flashLightStatus: Boolean = false
+    private var flashLightStatus: Boolean = false
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +41,6 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun openFlashLight() {
         val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
-    //        val cameraManager = ContextCompat.getSystemService(Context.CAMERA_SERVICE) as CameraManager
         val cameraId = cameraManager.cameraIdList[0]
         if (!flashLightStatus) {
             try {
