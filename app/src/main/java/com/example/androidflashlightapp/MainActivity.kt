@@ -1,47 +1,48 @@
 package com.example.androidflashlightapp
 
+import android.content.Context
+import android.hardware.camera2.CameraAccessException
+import android.hardware.camera2.CameraManager
 import android.os.Bundle
+import android.widget.RatingBar
+import android.widget.Switch
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.androidflashlightapp.ui.theme.AndroidFlashlightAppTheme
 
 class MainActivity : ComponentActivity() {
+    private var flashLightStatus: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent {
-            AndroidFlashlightAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+        setContentView(R.layout.main_layout)
+        val mySwitch: Switch = findViewById(R.id.switch1)
+        mySwitch.setOnCheckedChangeListener { _, _ ->
+            openFlashLight()
+        }
+        mySwitch.isChecked = true
+    }
+
+    private fun openFlashLight() {
+        val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        val cameraId = cameraManager.cameraIdList[0]
+        if (!flashLightStatus) {
+            try {
+                val myRatingBar: RatingBar = findViewById(R.id.ratingBar)
+                cameraManager.turnOnTorchWithStrengthLevel(cameraId, myRatingBar.rating.toInt())
+                flashLightStatus = true
+
+            } catch (e: CameraAccessException) {
+                println(e.toString())
+            }
+        } else {
+            try {
+                cameraManager.setTorchMode(cameraId, false)
+                flashLightStatus = false
+            } catch (e: CameraAccessException) {
+                println(e.toString())
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AndroidFlashlightAppTheme {
-        Greeting("Android")
-    }
-}
